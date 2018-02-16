@@ -39,6 +39,58 @@ def mirror(name):
     return create_response(data)
 
 # TODO: Implement the rest of the API here!
+@app.route('/users')
+def get_all_users():
+    team_name = request.args.get('team')
+    if not team_name:
+        return create_response(db.get('users'))
+    all_users = db.get('users')
+    matched_users = [user for user in all_users if user['team'] == team_name]
+    data = {'users': matched_users}
+    return create_response(data)
+
+@app.route('/users/<id>')
+def get_user_by_id(id):
+    return create_response(db.getById('users', int(id)))
+
+@app.route('/users', methods=['POST'])
+def post_user():
+    name = request.form.get('name')
+    age = request.form.get('age')
+    team = request.form.get('team')
+    data = {}
+    if name and age and team:
+        payload = {'name': name, 'age':age, 'team': team}
+        data = db.create('users', payload)
+        return create_response(data, status=201)
+
+    else:
+        return create_response(data, 422, 'user name, age and team must be provided')
+
+@app.route('/users/<id>', methods=['PUT'])
+def update_user(id):    
+    name = request.form.get('name')
+    age = request.form.get('age')
+    team = request.form.get('team')
+    data = {}
+    if name:
+        data['name'] = name
+    if age:
+        data['age'] = age
+    if team:
+        data['team'] = team
+    response = db.updateById('users', int(id), data)
+    if not response:
+        return create_response({}, 404, 'user not found')
+    return create_response(response, 201)
+
+@app.route('/users/<id>', methods=['DELETE'])
+def delete_user(id):    
+    if not db.getById('users', int(id)):
+        return create_response({}, 404, 'user not found')
+    db.deleteById('users', int(id))
+    return create_response({}, 200, 'delete success')
+    
 
 """
 ~~~~~~~~~~~~ END API ~~~~~~~~~~~~
