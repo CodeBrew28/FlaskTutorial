@@ -42,10 +42,31 @@ def mirror(name):
 
 @app.route('/users')
 def get_users():
-	data = {
-	'users':db.get('users')
-	}
-	return create_response(data)
+
+	if request.args.get('team') is None:
+		data = {
+		'users':db.get('users')
+		}
+	else:
+		usersOnTeam = [i for i in db.get('users') if i['team'] == request.args.get('team')]
+		data = {
+		'users': usersOnTeam
+		}
+
+		return create_response(data)
+
+@app.route('/users/<id>', methods = ['GET'])
+def userId(id):
+	if db.getById('users',int(id) is None):
+		return create_response(None, 404, "User can't be found")
+	else:
+		data = {
+			'user': db.getById('users',int(id))
+		}
+		return create_response(data)
+
+
+
 
 
 """
