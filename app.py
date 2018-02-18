@@ -40,32 +40,56 @@ def mirror(name):
 
 # TODO: Implement the rest of the API here!
 
-@app.route('/users')
-def get_users():
-
-	if request.args.get('team') is None:
-		data = {
-		'users':db.get('users')
-		}
-	else:
-		usersOnTeam = [i for i in db.get('users') if i['team'] == request.args.get('team')]
-		data = {
-		'users': usersOnTeam
-		}
+@app.route('/users', methods=['GET']) 
+def users():
+	if request.method == 'GET':
+		if request.args.get('team') is None:
+			data = {
+			'users':db.get('users')
+			}
+		else:
+			usersOnTeam = [i for i in db.get('users') if i['team'] == request.args.get('team')]
+			data = {
+			'users': usersOnTeam
+			}
 
 		return create_response(data)
 
-@app.route('/users/<id>', methods = ['GET'])
+@app.route('/users', methods=['POST'])
+def post_users():
+	input = request.get_json()
+	
+	if input:
+		entries = {'name': input.get('name'),
+		   	   'age': input.get('age'),
+		   	   'team': input.get('team')}
+	
+		data = db.create('user',entries)
+		return create_response(data,status=201)
+
+	else:
+		return create_response(None,404,"User not found")
+
+@app.route('/users/<id>', methods = ['GET','PUT','DELETE'])
 def userId(id):
-	if db.getById('users',int(id) is None):
-		return create_response(None, 404, "User can't be found")
-	else:
-		data = {
-			'user': db.getById('users',int(id))
-		}
-		return create_response(data)
+	if request.method == 'GET':
+		if db.getById('users',int(id) is None):
+			return create_response(None, 404, "User can't be found")
+		else:
+			data = {
+				'user': db.getById('users',int(id))
+			}
+			return create_response(data)
+	elif request.method == 'PUT':
+		entries = {'name': request.form['name'], 'age': request.form['age'], 'team': request.form['team']}
+		return create_response(db.updateById('users',id,entries))
 
 
+	elif request.method == 'DELETE':
+		if db.getById('users',int(id)) is None:
+			return create_response(None,404,"User not found")
+		else:
+			return create_response({},200,"User deleted")
 
 
 
