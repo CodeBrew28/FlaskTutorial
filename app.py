@@ -44,11 +44,13 @@ def mirror(name):
 def users():
 	return create_response(db.get('users'))
 
-# @app.route('/users/<id>')
-# def users(id):
-# 	data = db.get('users')
-#
-# 	return create_response(data)
+@app.route('/users/<user_id>')
+def users_id(user_id):
+	data = db.getById('users', int(user_id))
+
+	if data is None:
+		return create_response({}, 404, "There is no user with the specified ID")
+	return create_response(data)
 
 """
 ~~~~~~~~~~~~ END API ~~~~~~~~~~~~
