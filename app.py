@@ -22,7 +22,6 @@ def create_response(data={}, status=200, message=''):
         'result': data
     }
     return jsonify(response), status
-
 """
 ~~~~~~~~~~~~ API ~~~~~~~~~~~~
 """
