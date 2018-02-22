@@ -26,6 +26,10 @@ def create_response(data={}, status=200, message=''):
 """
 ~~~~~~~~~~~~ API ~~~~~~~~~~~~
 """
+@app.route('/', methods = ['GET'])
+def formatJson():
+    jsondata = request.args.get(data)
+    return create_response(jsondata)
 
 @app.route('/')
 def hello_world():
