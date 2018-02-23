@@ -58,17 +58,16 @@ def users():
 @app.route('/users', methods=['POST'])
 def post_users():
 	input = request.get_json()
+	try:
+		name = input["name"], age = input["age"], team = input ["team"]   	
+	except:
+		return create_response(None,422,"Missing User Information")
+	entries = {'name': name,
+		   'age': age,
+		   'team': team}
 	
-	if input:
-		entries = {'name': input.get('name'),
-		   	   'age': input.get('age'),
-		   	   'team': input.get('team')}
-	
-		data = db.create('user',entries)
-		return create_response(data,status=201)
-
-	else:
-		return create_response(None,404,"User not found")
+	data = db.create('users',entries)
+	return create_response(data,status=201)
 
 @app.route('/users/<id>', methods = ['GET','PUT','DELETE'])
 def userId(id):
