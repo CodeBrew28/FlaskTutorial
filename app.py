@@ -38,6 +38,26 @@ def mirror(name):
     }
     return create_response(data)
 
+@app.route('/users')
+def users():
+    data = {
+        'users': db.get('users')
+    }
+    return create_response(data)
+
+@app.route('/users/<id>')
+def user_by_id(id):
+    data = {
+        'user': db.getById('users', int(id))
+    }
+    if int(id) > 0 and int(id) < 5:
+        return create_response(data)
+    else:
+        return create_response('404 Error. Check to make sure your id was between 1 and 4.')
+
+
+
+
 # TODO: Implement the rest of the API here!
 
 """
