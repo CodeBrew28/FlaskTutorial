@@ -29,8 +29,7 @@ def create_response(data={}, status=200, message=''):
 def users():
     if request.method == 'GET':
         jsondata = db.get('users')
-        team = request.args.get('team')
-    return create_response(j{'users': jsondata})
+    return create_response({'users': jsondata})
 
 @app.route('/')
 def hello_world():
