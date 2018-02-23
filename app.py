@@ -59,7 +59,7 @@ def users():
 def post_users():
 	input = request.get_json()
 	try:
-		name = input["name"], age = input["age"], team = input ["team"]   	
+		name, age, team = input["name"], input["age"], input ["team"]   	
 	except:
 		return create_response(None,422,"Missing User Information")
 	entries = {'name': name,
